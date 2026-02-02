@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Campus Navigation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="controls">
+      <h2>Campus Navigation</h2>
+
+      <label>From</label>
+      <select id="start"></select>
+
+      <label>To</label>
+      <select id="end"></select>
+
+      <button onclick="findPath()">Find Shortest Route</button>
+
+      <p>Distance: <span id="distance">-</span></p>
+      <p>Time: <span id="time">-</span></p>
+
+      <div class="info">
+        <h3 id="buildingName"></h3>
+        <img id="buildingImage" src="" alt="Building" />
+      </div>
+    </div>
+
+    <!-- MAP AREA -->
+    <div class="map">
+      <canvas id="canvas"></canvas>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
