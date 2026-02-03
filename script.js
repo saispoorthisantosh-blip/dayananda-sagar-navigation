@@ -9,220 +9,133 @@ window.addEventListener("resize", () => drawMap(currentPath));
 resizeCanvas();
 
 /* ================= BUILDINGS ================= */
-const buildings = {
-  Entrance:{x:500,y:40,img:"entrance.jpg"},
-  Library:{x:360,y:110,img:"library.jpg"},
-  PCSagar:{x:400,y:160,img:"pcsagar.jpg"},
-  Heritage:{x:400,y:220,img:"heritage.jpg"},
-  ShavigeMalleshwara:{x:460,y:240,img:"shavigemalleshwara.jpg"},
-  Canteen:{x:520,y:290,img:"canteen.jpg"},
-  HallOfAdmission:{x:400,y:300,img:"hallofadmission.jpg"},
-  DentalScience:{x:400,y:360,img:"dentalscience.jpg"},
-  ComDesign:{x:400,y:420,img:"comdesign.jpg"},
-  NelsonMandela:{x:400,y:480,img:"nelsonmandela.jpg"},
-  Garden:{x:540,y:520,img:"garden.jpg"},
-  Ground:{x:650,y:520,img:"ground.jpg"},
-  BusinessBlock:{x:680,y:580,img:"businessblock.jpg"},
-  BusinessSchool:{x:680,y:640,img:"businessschool.jpg"},
-  Architecture:{x:760,y:640,img:"architecture.jpg"},
-  DayanandSagarSchool:{x:620,y:700,img:"dayanandsagarschool.jpg"},
-  GirlsHostel:{x:520,y:650,img:"girlshostel.jpg"},
-  CSE:{x:520,y:720,img:"cse.jpg"},
-  ElectronicsBlock:{x:470,y:770,img:"electronicsblock.jpg"},
-  Mechanical:{x:720,y:210,img:"mechanical.jpg"},
-  AIRobotics:{x:700,y:260,img:"aiandrobotics.jpg"},
-  EEE:{x:740,y:300,img:"eee.jpg"},
-  Chemical:{x:740,y:360,img:"chemical.jpg"},
-  CDSagar:{x:740,y:430,img:"cdsagar.jpg"},
-  Parking:{x:620,y:150,img:"parking.jpg"}
-};
-
-/* ================= AUTO FIT ================= */
-function getBounds() {
-  const xs = Object.values(buildings).map(b => b.x);
-  const ys = Object.values(buildings).map(b => b.y);
-  return {
-    minX: Math.min(...xs),
-    maxX: Math.max(...xs),
-    minY: Math.min(...ys),
-    maxY: Math.max(...ys)
-  };
-}
-
-function transformPoint(x, y) {
-  const pad = 90;
-  const b = getBounds();
-  const scale = Math.min(
-    (canvas.width - pad * 2) / (b.maxX - b.minX),
-    (canvas.height - pad * 2) / (b.maxY - b.minY)
-  );
-  return {
-    x: (x - b.minX) * scale + pad,
-    y: (y - b.minY) * scale + pad
-  };
-}
-
-/* ================= OUTLINE ================= */
-function drawCampusOutline() {
-  const b = getBounds();
-  const tl = transformPoint(b.minX - 60, b.minY - 60);
-  const tr = transformPoint(b.maxX + 60, b.minY - 60);
-  const br = transformPoint(b.maxX + 60, b.maxY + 60);
-  const bl = transformPoint(b.minX - 60, b.maxY + 60);
-
-  ctx.strokeStyle = "#1e90ff";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(tl.x, tl.y);
-  ctx.lineTo(tr.x, tr.y);
-  ctx.lineTo(br.x, br.y);
-  ctx.lineTo(bl.x, bl.y);
-  ctx.closePath();
-  ctx.stroke();
-}
-
-/* ================= GRAPH (UPDATED ONLY) ================= */
 const graph = {
-  Entrance:{Library:0.05},
+  Entrance: { Library: 0.05, Parking: 0.04 },
+  Library: { PCSagar: 0.04 },
+  PCSagar: { Library: 0.04, Heritage: 0.04 },
+  Heritage: {
+    PCSagar: 0.04,
+    ShavigeMalleshwara: 0.03,
+    HallOfAdmission: 0.03,
+    Canteen: 0.04
+  },
+  ShavigeMalleshwara: {
+    Mechanical: 0.06,
+    Canteen: 0.03,
+    HallOfAdmission: 0.03
+  },
+  Mechanical: {
+    ShavigeMalleshwara: 0.06,
+    Parking: 0.05,
+    EEE: 0.03
+  },
+  EEE: {
+    Mechanical: 0.03,
+    Chemical: 0.03,
+    AIRobotics: 0.03
+  },
+  AIRobotics: { EEE: 0.03, Mechanical: 0.03 },
+  Chemical: { EEE: 0.03, CDSagar: 0.04 },
+  CDSagar: { Chemical: 0.04, Ground: 0.05 },
+  Ground: {
+    CDSagar: 0.05,
+    Garden: 0.04,
+    BusinessBlock: 0.04,
+    GirlsHostel: 0.03
+  },
+  Garden: { Ground: 0.04, GirlsHostel: 0.03, Canteen: 0.04 },
+  Canteen: {
+    ShavigeMalleshwara: 0.03,
+    Heritage: 0.04,
+    Garden: 0.04,
+    HallOfAdmission: 0.03
+  },
+  Parking: { Entrance: 0.04, Mechanical: 0.05 },
+  HallOfAdmission: {
+    DentalScience: 0.03,
+    ShavigeMalleshwara: 0.03,
+    Heritage: 0.03,
+    Canteen: 0.03
+  },
+  DentalScience: { HallOfAdmission: 0.03 },
+  ComDesign: { DentalScience: 0.03 },
 
-  Library:{PCSagar:0.04},
+  BusinessBlock: { Architecture: 0.03, CSE: 0.03 },
+  Architecture: { DayanandSagarSchool: 0.03 },
+  DayanandSagarSchool: { CSE: 0.03, GirlsHostel: 0.03 },
+  CSE: { ElectronicsBlock: 0.04, GirlsHostel: 0.03 },
+  GirlsHostel: { ElectronicsBlock: 0.04, Ground: 0.03, Garden: 0.03 },
+  ElectronicsBlock: {},
 
-  PCSagar:{Heritage:0.04},
-
-  Heritage:{ShavigeMalleshwara:0.03},
-
-  ShavigeMalleshwara:{Mechanical:0.06},
-
-  Mechanical:{EEE:0.03},
-
-  EEE:{Chemical:0.03},
-
-  Chemical:{CDSagar:0.04},
-
-  CDSagar:{Ground:0.05},
-
-  /* CENTRAL */
-
-
-  Library: {
-  PCSagar: 0.04
+  NelsonMandela: {
+  ComDesign: 0.02,
+  Garden: 0.08
+},
+NelsonMandela: {
+  ComDesign: 0.03
 },
 
-PCSagar: {
-  Library: 0.04,
-  Heritage: 0.04
+ComDesign: {
+  DentalScience: 0.03
 },
 
-Garden: {
-  Ground: 0.04,
-  GirlsHostel: 0.03,
-  Canteen:0.04
+DentalScience: {
+  HallOfAdmission: 0.03
 },
 
-Ground: {
-  Garden: 0.04,
-  CDSagar: 0.05,
-  BusinessBlock: 0.04,
-  GirlsHostel: 0.03
-},
-
-CDSagar: {
-  Ground: 0.05,
-  Chemical: 0.04
-},
-
-Chemical: {
-  CDSagar: 0.04,
-  EEE: 0.03
-},
-
-EEE: {
-  Chemical: 0.03,
-  AIRobotics: 0.03
-},
-
-AIRobotics: {
-  EEE: 0.03,
-  Mechanical: 0.03
+HallOfAdmission: {
+  Canteen: 0.03
 },
 
 Canteen: {
-  ShavigeMalleshwara: 0.03,
-  Heritage:0.04,
-  Garden:0.04
+  Garden: 0.04
 },
 
-Entrance: {
-  Library: 0.05,
-  Parking: 0.04
-},
-Parking: {
-  Mechanical: 0.05,
-  Entrance: 0.04
+BusinessSchool: {
+  BusinessBlock: 0.03,
+  Architecture: 0.03
 },
 
-
-  Canteen: {
-  ShavigeMalleshwara: 0.03
+BusinessSchool: {
+  DayanandSagarSchool: 0.03
 },
-
-ShavigeMalleshwara: {
-  Canteen: 0.03,
-  Mechanical: 0.06
+BusinessSchool: {
+  DayanandSagarSchool: 0.03,
+  GirlsHostel: 0.03      // ✅ NEW direct path
 },
-
-Mechanical: {
-  ShavigeMalleshwara: 0.06,
-  Parking: 0.05
+BusinessBlock: {
+  Architecture: 0.03,
+  CSE: 0.03,
+  BusinessSchool: 0.03,
+  GirlsHostel: 0.03   // ✅ ADD THIS
 },
-
-Parking: {
-  Mechanical: 0.05
+GirlsHostel: {
+  ElectronicsBlock: 0.04,
+  Ground: 0.03,
+  Garden: 0.03,
+  CSE: 0.03           // ✅ ADD THIS
 },
-
-  HallOfAdmission:{
-  DentalScience:0.03,
-  ShavigeMalleshwara:0.03,
-  Heritage:0.03          // ✅ ADD THIS
+BusinessBlock: {
+  Architecture: 0.03,
+  CSE: 0.03,
+  BusinessSchool: 0.03   // ✅ ADD THIS
 },
-Heritage:{
-  PCSagar:0.04,
-  ShavigeMalleshwara:0.03,
-  HallOfAdmission:0.03 ,
-  Canteen:0.04  // ✅ ADD THIS
+BusinessSchool: {
+  DayanandSagarSchool: 0.03,
+  GirlsHostel: 0.03,
+  BusinessBlock: 0.03    // ✅ ADD THIS
 },
-Garden:{
-  Ground:0.04,
-  GirlsHostel:0.03   // ✅ ADD THIS
+GirlsHostel: {
+  ElectronicsBlock: 0.04,
+  Ground: 0.03,
+  Garden: 0.03,
+  BusinessSchool: 0.03   // ✅ NEW reverse path
 },
-
-ShavigeMalleshwara:{
-  Mechanical:0.06,
-  HallOfAdmission:0.03      // ✅ ADD THIS
-},
-
-  ComDesign:{DentalScience:0.03},
-
-  DentalScience:{HallOfAdmission:0.03},
-
-  HallOfAdmission:{Canteen:0.03},
-
-  Canteen:{},
-
-  /* BUSINESS SIDE */
-  BusinessBlock:{Architecture:0.03},
-
-  Architecture:{DayanandSagarSchool:0.03},
-
-  DayanandSagarSchool:{CSE:0.03},
-
-  CSE:{GirlsHostel:0.03},
-
-  GirlsHostel:{ElectronicsBlock:0.04},
-
-  ElectronicsBlock:{},
-
-  Parking:{}
+DayanandSagarSchool: {
+  CSE: 0.03,
+  GirlsHostel: 0.03,
+  BusinessSchool: 0.03
+}
 };
 /* ================= TWO WAY ================= */
 Object.keys(graph).forEach(a=>{
@@ -356,3 +269,4 @@ function animateDot(){
 
 
 drawMap();
+
