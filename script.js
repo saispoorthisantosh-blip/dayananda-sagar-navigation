@@ -102,10 +102,7 @@ const graph = {
   CDSagar:{Ground:0.05},
 
   /* CENTRAL */
-  Ground:{
-    Garden:0.04,
-    BusinessBlock:0.04
-  },
+
 
   Library: {
   PCSagar: 0.04
@@ -118,7 +115,8 @@ PCSagar: {
 
 Garden: {
   Ground: 0.04,
-  GirlsHostel: 0.03
+  GirlsHostel: 0.03,
+  Canteen:0.04
 },
 
 Ground: {
@@ -149,7 +147,9 @@ AIRobotics: {
 },
 
 Canteen: {
-  ShavigeMalleshwara: 0.03
+  ShavigeMalleshwara: 0.03,
+  Heritage:0.04,
+  Garden:0.04
 },
 
 Entrance: {
@@ -162,16 +162,6 @@ Parking: {
 },
 
 
-
-  Garden:{
-    Ground:0.04,
-    NelsonMandela:0.04   // ✅ FIXED
-  },
-
-  NelsonMandela:{
-    Garden:0.04,
-    ComDesign:0.03
-  },
   Canteen: {
   ShavigeMalleshwara: 0.03
 },
@@ -198,7 +188,8 @@ Parking: {
 Heritage:{
   PCSagar:0.04,
   ShavigeMalleshwara:0.03,
-  HallOfAdmission:0.03   // ✅ ADD THIS
+  HallOfAdmission:0.03 ,
+  Canteen:0.04  // ✅ ADD THIS
 },
 Garden:{
   Ground:0.04,
@@ -233,7 +224,6 @@ ShavigeMalleshwara:{
 
   Parking:{}
 };
-
 /* ================= TWO WAY ================= */
 Object.keys(graph).forEach(a=>{
   Object.keys(graph[a]).forEach(b=>{
@@ -363,5 +353,6 @@ function animateDot(){
   if(dotIndex<currentPath.length)
     requestAnimationFrame(()=>setTimeout(animateDot,400));
 }
+
 
 drawMap();
